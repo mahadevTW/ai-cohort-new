@@ -4,11 +4,10 @@
 
 1. Add `samples: int = 1` to `POST /chat` — it sends the same message array that many times and returns every reply plus `unique_replies`.
 2. Call it with `samples=10` at `temperature=0`, then at `temperature=1.2`. Put both `unique_replies` counts in `docs/week1.md`. **Was temperature 0 actually deterministic?**
-3. Send a `temperature` to `THINKING_MODEL` through the same endpoint. Paste what came back, error text included. **Why does this model not have the knob?**
-4. Ask `POST /compare` one trivial HR question and one that needs real reasoning, then write three sentences in `docs/week1.md`: which model type you would ship this assistant on, the cost ratio you measured, and the one observation that would make you switch.
+3. Send a `temperature`. Paste what came back, error text included. **Why does this model not have the knob?**
+> Add /usage api it should be usage data till now along with history of usage
 5. **Give it a face.** Serve the UI from your own service with `Jinja2Templates` — one `templates/chat.html`, plain CSS and vanilla JS, no CDN and no framework. `GET /` renders it, the send button calls your `/chat`, replies land in the thread, and a corner badge shows tokens and cost for the last turn plus the running total for the page. Screenshot it in your PR.
-6. Your page keeps the conversation in a JavaScript array and sends it back as `history` on every turn. Refresh the tab. **The browser is currently the only thing in this system with a memory — and watch what the cost badge does as the conversation gets longer.**
+6. Your page keeps the conversation in a backend array and sends it back as `history` on every turn. Refresh the tab.
 7. Change nothing else: no database, no history assembled on the server. Those are weeks 3 and 2, and fixing them now removes the lesson.
-
 
 Bring to session 2: your chat page open, and the number that surprised you.
