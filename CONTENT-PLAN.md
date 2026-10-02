@@ -173,7 +173,7 @@ Taught at exactly the moment it bites: 10 minutes after students learn temperatu
 - **Concept (45):** the prompt ladder — specificity, audience, role, constraints, format; **rules in a prompt are requests, not guarantees**; few-shot beats prose for fuzzy criteria; JSON schema as an actual guarantee (**35**) · **thinking models, second pass (10):** the same prompt written for both model types — why a reasoning model gets *worse* when you hand it your chain-of-thought instructions, and what to give it instead
 - **Live build (115):** iterate one HR prompt up the ladder, measuring each rung against a fixed question set; Pydantic models; strict `response_format`; a validate-and-retry wrapper; few-shot intent routing (policy / payroll / IT / out-of-scope)
 - **Lab (50):** design a leave-request schema; handle three malformed inputs without crashing
-- **Homework (mandatory · due before week 3):** convert every bot response to a typed model; make the bot refuse out-of-scope questions reliably
+- **Homework (mandatory · due before week 3):** convert every bot response to a typed model; make the bot refuse out-of-scope questions reliably; **persist conversations to a table** — your Pydantic model *is* the row schema; ordinary CRUD you already know, but the assistant must survive a restart
 
 ---
 
@@ -185,7 +185,7 @@ Taught at exactly the moment it bites: 10 minutes after students learn temperatu
 - **Concept (45):** **prompt vs context — the hinge of the course**; "bad answer? ask whether the information was even there"; the eight buckets; more context is not better context; rank, don't truncate (critical → noise); **priority is not recency** — the sliding window silently eats your system prompt first; chat history vs long-term memory
 - **Live build (115):** `build_messages()` assembling all eight buckets; `prioritize()` and `fit_to_budget()`; rolling summarization; a structured state object (employee ID, open request, last intent); prompt caching with before/after cost measured
 - **Lab (50):** **paste 40 HR policy PDFs into the context and watch it break.** This is the cliffhanger into week 4 — do not resolve it
-- **Homework (mandatory · due before week 4):** log context composition on every call; memory extraction as an idempotent job; **persist conversations to a table** — ordinary CRUD you already know, but the assistant should survive a restart
+- **Homework (mandatory · due before week 4):** log context composition on every call; memory extraction as an idempotent job, written against the conversation table built in week 2
 
 ---
 
@@ -367,7 +367,7 @@ Net additions after a fresh-eyes review. None of these were sold, all of them ar
 | **Prompt → RAG → fine-tune decision tree** | Week 5 | ~10 min |
 | **Observability and tracing tools** | Week 7 | ~10 min |
 | **Vision for scanned documents** | Week 4 | ~15 min, droppable |
-| **Conversation persistence** | Week 3 homework | No contact time |
+| **Conversation persistence** | Week 2 homework | No contact time |
 | **Mocking LLM calls in CI** | Week 9 pre-work template | No contact time |
 
 ### Evaluated and deliberately rejected
