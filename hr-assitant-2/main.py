@@ -1,3 +1,7 @@
+# Create virtual environment using the following command:
+# run the server using python hr-assitant-2/main.py
+# make sure to set the OPENAI_API_KEY environment variable before running the server
+
 from fastapi import FastAPI
 import httpx
 app  = FastAPI()
