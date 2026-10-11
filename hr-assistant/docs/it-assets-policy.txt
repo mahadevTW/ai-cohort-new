@@ -1,0 +1,615 @@
+IT ASSETS POLICY
+
+Document Owner: IT Department (in coordination with Human Resources)
+Version: 1.0
+Effective Date: 1 October 2026
+Review Cycle: Annually
+Applies To: All employees, interns, contractors and consultants of the Company
+
+======================================================================
+1. PURPOSE
+======================================================================
+
+This policy explains how the Company issues, manages, protects and recovers
+its IT assets. It sets out what employees can expect to receive, how they
+must look after Company equipment, and what happens when equipment is lost,
+damaged, upgraded or returned.
+
+The goals of this policy are to:
+- Give every employee the tools they need to do their job well.
+- Protect Company and customer data stored on or accessed through devices.
+- Keep a clear record of who holds which asset at all times.
+- Control costs by extending the useful life of equipment.
+- Comply with applicable data protection, software licensing and
+  environmental regulations.
+
+======================================================================
+2. SCOPE
+======================================================================
+
+This policy applies to:
+- Full-time and part-time employees.
+- Interns and trainees.
+- Contractors, consultants and temporary staff who are issued Company assets.
+
+It covers all IT assets owned, leased or paid for by the Company, including:
+- Laptops and desktop computers
+- Mobile phones and tablets
+- Monitors, docking stations, keyboards, mice and headsets
+- Data cards, dongles and portable Wi-Fi devices
+- External storage devices (USB drives, external hard disks)
+- Software licences and SaaS subscriptions
+- Access cards, security tokens and hardware authentication keys
+- Peripherals such as printers, webcams and conference equipment
+
+Personal devices used for work (Bring Your Own Device, "BYOD") are covered
+in Section 9.
+
+======================================================================
+3. DEFINITIONS
+======================================================================
+
+IT Asset: Any hardware, software or digital resource owned, leased or
+licensed by the Company.
+
+Asset Holder: The employee to whom an asset is formally assigned.
+
+Asset Tag: The unique identification label or number attached to each
+hardware asset and recorded in the asset register.
+
+Asset Register: The central inventory maintained by the IT Department that
+records each asset, its specifications, holder, location and status.
+
+IT Helpdesk: The IT support team, reachable through the IT ticketing portal,
+email (itsupport@company.com) or the internal chat support channel.
+
+Refresh Cycle: The standard period after which a device becomes eligible for
+replacement.
+
+======================================================================
+4. ROLES AND RESPONSIBILITIES
+======================================================================
+
+4.1 Employees (Asset Holders)
+- Use assets mainly for Company business and in line with this policy.
+- Keep assets physically safe and in good working condition.
+- Report loss, theft or damage to the IT Helpdesk within 24 hours.
+- Do not remove asset tags, security software or management profiles.
+- Return all assets in working condition on exit or when requested.
+
+4.2 Managers
+- Raise asset requests for new joiners at least 7 working days before
+  the joining date.
+- Approve requests for additional or higher-specification equipment.
+- Make sure departing team members return all assets before their last
+  working day.
+
+4.3 IT Department
+- Buy, configure, tag, issue and track all IT assets.
+- Keep the asset register accurate and up to date.
+- Install and maintain security controls (encryption, antivirus, device
+  management).
+- Provide repairs, replacements and technical support.
+- Securely wipe and dispose of retired assets.
+
+4.4 Human Resources
+- Inform IT of new joiners, transfers and exits in a timely manner.
+- Include asset return in the exit clearance process.
+- Coordinate recovery of costs for lost or damaged assets where applicable.
+
+4.5 Finance
+- Approve budgets for asset purchases.
+- Process cost recoveries and allowance reimbursements.
+- Maintain depreciation records.
+
+======================================================================
+5. ASSET ENTITLEMENT
+======================================================================
+
+5.1 Standard Entitlement by Role
+
+The table below shows the standard equipment issued. Actual specifications
+may change based on availability and current market models.
+
+Role Category                 | Laptop                 | Mobile Phone       | Other
+------------------------------|------------------------|--------------------|---------------------------
+General / Operations staff    | Standard laptop        | Not provided       | Headset, mouse
+Software Engineers / Data     | High-performance       | Not provided       | 1 external monitor,
+                              | laptop (min. 16 GB RAM,|                    | keyboard, mouse, headset
+                              | 512 GB SSD)            |                    |
+Designers / Creative          | High-performance laptop| Not provided       | Colour-accurate monitor,
+                              | (macOS or equivalent)  |                    | drawing tablet on request
+Sales / Customer-facing staff | Lightweight laptop     | Company smartphone | Portable Wi-Fi device,
+                              |                        | + SIM plan         | headset
+Managers (team lead & above)  | Standard / lightweight | Company smartphone | 1 external monitor,
+                              | laptop                 | + SIM plan         | headset
+Senior Leadership             | Premium laptop         | Premium smartphone | Tablet on request
+                              |                        | + SIM plan         |
+Interns                       | Standard laptop (pool) | Not provided       | Headset
+Contractors                   | As agreed in contract  | Not provided       | As agreed in contract
+
+5.2 Additional Equipment
+Employees may request additional equipment (for example, a second monitor or
+an ergonomic chair accessory) through the IT ticketing portal. Requests need
+manager approval and, for items above the departmental limit, Finance
+approval. Requests on medical grounds should be supported by a doctor's note
+and are prioritised.
+
+5.3 Only One Primary Device
+Each employee is normally issued one primary laptop. A second laptop is given
+only where there is a documented business need (for example, testing on a
+different operating system) and requires department head approval.
+
+======================================================================
+6. LAPTOPS AND DESKTOPS
+======================================================================
+
+6.1 Issuance
+- Laptops are issued on the first working day after the employee signs the
+  Asset Acknowledgement Form (digital or physical).
+- Each laptop comes pre-installed with the operating system, standard
+  productivity software, security tools and device management software.
+- The employee must check the device and report any visible damage or
+  missing items within 2 working days. After that, the device is taken to
+  have been received in good condition.
+
+6.2 Standard Configuration
+Every Company laptop will have:
+- Full-disk encryption (BitLocker for Windows, FileVault for macOS).
+- Company-approved antivirus / endpoint protection.
+- Mobile Device Management (MDM) enrolment.
+- Automatic operating system and security updates.
+- A screen lock that activates after 5 minutes of inactivity.
+- Company VPN client.
+
+6.3 Acceptable Use
+Employees must:
+- Lock the screen (Windows: Win + L, macOS: Ctrl + Cmd + Q) whenever they
+  step away.
+- Keep the operating system and applications updated; do not postpone
+  updates for more than 3 days.
+- Store work files on Company-approved cloud storage, not only on the local
+  disk, so data is backed up.
+- Connect to public Wi-Fi only through the Company VPN.
+
+Employees must not:
+- Disable or uninstall security software, encryption or MDM.
+- Install unlicensed, pirated or unapproved software.
+- Allow family members, friends or any unauthorised person to use the device.
+- Use the device for illegal activities, personal commercial work, crypto
+  mining or accessing offensive content.
+- Open the device casing or attempt hardware repairs themselves.
+- Change administrator settings or create unauthorised local accounts.
+
+6.4 Limited Personal Use
+Reasonable personal use (for example, checking personal email or reading
+news during breaks) is allowed if it does not interfere with work, use
+excessive bandwidth or break any Company policy. Employees should not store
+large personal files (photos, videos, music) on Company devices. The Company
+is not responsible for personal data stored on Company devices, and such data
+may be deleted during repairs, reimaging or exit.
+
+6.5 Refresh Cycle
+Device Type                    | Refresh Cycle
+-------------------------------|--------------
+Standard laptop                | 4 years
+High-performance laptop        | 3 years
+Desktop computer               | 5 years
+Monitor                        | 5 years
+
+A device may be replaced earlier if it fails repeatedly, cannot run required
+software, or is no longer supported with security updates. Upgrades outside
+the refresh cycle require manager and IT approval.
+
+6.6 Desktops
+Desktops are used for specific roles such as lab, testing, design or
+reception work. They stay at the assigned office location and must not be
+moved without IT approval.
+
+======================================================================
+7. MOBILE PHONES AND TABLETS
+======================================================================
+
+7.1 Eligibility
+Company mobile phones are provided to roles that need to be reachable outside
+the office or work with customers in the field, mainly Sales, Customer
+Success, Support on-call staff, Managers and Senior Leadership (see Section
+5.1). Other employees may receive a phone where there is a clear business
+need approved by the department head.
+
+7.2 Mobile Plans
+- The Company pays for a standard voice and data plan selected by IT and
+  Finance.
+- International roaming must be activated through the IT Helpdesk before
+  business travel. Roaming charges for personal travel are paid by the
+  employee.
+- Charges for premium-rate services, in-app purchases, paid apps or excess
+  personal usage above the plan will be recovered from the employee.
+
+7.3 Security Requirements
+- Devices must be enrolled in MDM before Company email or apps are installed.
+- A PIN of at least 6 digits or biometric lock is mandatory.
+- The device must not be jailbroken or rooted.
+- Apps may only be installed from official app stores.
+- Automatic updates must remain switched on.
+- IT may remotely lock or wipe the device if it is lost, stolen or if the
+  employee leaves the Company.
+
+7.4 Phone Number Ownership
+Company-provided phone numbers belong to the Company. On exit, the number is
+retained by the Company unless HR and the department head approve a transfer
+in writing.
+
+7.5 Refresh Cycle
+Company smartphones are replaced every 3 years, or earlier if the device is
+no longer supported with security updates.
+
+7.6 Mobile Phone Allowance (Alternative)
+Employees who are eligible for a Company phone may instead choose to use
+their personal phone and receive a monthly mobile allowance, as set by
+Finance. In this case the BYOD rules in Section 9 apply.
+
+======================================================================
+8. ACCESSORIES, PERIPHERALS AND OTHER EQUIPMENT
+======================================================================
+
+8.1 Standard Accessories
+Accessories such as chargers, mice, keyboards, headsets and laptop bags are
+issued along with the main device and recorded against the employee's name.
+
+8.2 Replacing Accessories
+- Accessories that fail due to normal wear and tear are replaced free of
+  charge after the faulty item is returned to IT.
+- Accessories lost by the employee will be replaced once free of charge per
+  year. Further replacements are charged at current cost.
+
+8.3 External Storage Devices
+- USB drives and external hard disks are blocked by default on Company
+  laptops.
+- Where there is a business need, IT will issue an encrypted Company USB
+  device. Personal USB drives must not be used.
+- Confidential or customer data must never be copied to removable storage
+  without written approval from the data owner and IT Security.
+
+8.4 Portable Wi-Fi Devices and Data Cards
+These are issued to employees who travel frequently or work in the field.
+Usage is monitored, and excessive personal use may be recovered from the
+employee.
+
+8.5 Shared and Office Equipment
+Printers, conference room systems, projectors and shared monitors are Company
+assets managed by IT and Facilities. Faults should be reported through the IT
+ticketing portal. These items must not be removed from the office.
+
+======================================================================
+9. BRING YOUR OWN DEVICE (BYOD)
+======================================================================
+
+9.1 Permitted Use
+Employees may access limited Company services (email, calendar, chat and
+approved collaboration apps) from personal mobile phones and tablets.
+Personal laptops may not be used to access Company systems unless approved
+by IT Security for a specific business reason.
+
+9.2 Requirements
+To use a personal device, the employee must:
+- Register the device with the IT Helpdesk.
+- Install the Company's MDM or app-protection profile, which keeps Company
+  data in a separate, managed work area.
+- Use a supported and up-to-date operating system.
+- Keep a screen lock (PIN, password or biometric) switched on.
+- Not jailbreak or root the device.
+
+9.3 Privacy
+The Company manages only the work profile or Company apps on a personal
+device. It does not access personal photos, messages, call history or
+personal apps. If the device is lost or the employee leaves, IT will remove
+only Company data and the work profile, unless a full wipe is required to
+protect Company data and the employee has been informed.
+
+9.4 Costs and Support
+The employee is responsible for the purchase, repair and running costs of a
+personal device, except where a mobile allowance is paid under Section 7.6.
+IT will provide support only for Company apps and the work profile.
+
+======================================================================
+10. SOFTWARE AND LICENCES
+======================================================================
+
+10.1 Approved Software
+Only software on the Company's approved software list may be installed. The
+list is available on the IT intranet page. Standard software is installed by
+IT at the time of issue.
+
+10.2 Requesting New Software
+Employees can request new software through the IT ticketing portal. Requests
+are reviewed by IT Security for security, licensing and data privacy risks.
+Typical review time is 3 to 5 working days.
+
+10.3 Licence Compliance
+- All software must be properly licensed. Using pirated or cracked software
+  is strictly prohibited and may lead to disciplinary action.
+- Company licences must not be installed on personal devices unless the
+  licence allows it and IT approves.
+- Licences are reclaimed when an employee changes role or leaves.
+
+10.4 Cloud Services and AI Tools
+Employees must not sign up for external cloud services, file-sharing sites or
+AI tools using Company email, or upload Company or customer data to them,
+unless the tool has been approved by IT Security. Approved AI tools are
+listed on the IT intranet page.
+
+======================================================================
+11. SECURITY AND DATA PROTECTION
+======================================================================
+
+11.1 Passwords and Authentication
+- Passwords must be at least 12 characters and must not be reused across
+  systems.
+- Multi-factor authentication (MFA) is mandatory for email, VPN and all
+  critical systems.
+- Passwords must never be shared, written down near the device, or sent over
+  email or chat.
+- The Company password manager should be used to store work passwords.
+
+11.2 Physical Security
+- Never leave devices unattended in public places, vehicles or hotel lobbies.
+- Do not leave a laptop visible inside a parked car. If unavoidable, lock it
+  in the boot out of sight.
+- Carry laptops as hand luggage when flying; never check them in.
+- Use a privacy screen when working in public spaces with sensitive data.
+- Store devices in a locked drawer or take them home at the end of the day
+  if working from a shared office.
+
+11.3 Monitoring
+Company devices, networks and accounts may be monitored for security,
+compliance and troubleshooting purposes, in line with applicable law.
+Employees should have no expectation of privacy for activity on Company
+devices and systems, except as provided by law.
+
+11.4 Reporting Security Incidents
+Employees must report suspected phishing emails, malware, unusual device
+behaviour or any possible data breach to the IT Helpdesk or
+security@company.com immediately.
+
+======================================================================
+12. LOSS, THEFT AND DAMAGE
+======================================================================
+
+12.1 Reporting
+If a Company asset is lost or stolen, the employee must:
+1. Inform the IT Helpdesk within 24 hours (immediately, if possible) so the
+   device can be locked or wiped remotely.
+2. Inform their manager.
+3. In case of theft, file a police report within 48 hours and share a copy
+   with IT and HR.
+
+12.2 Cost Recovery
+Each case is reviewed by IT and HR. Cost recovery is decided as follows:
+
+Situation                                         | Employee Liability
+--------------------------------------------------|---------------------------
+Normal wear and tear or manufacturing defect      | None
+Theft with police report, reasonable care taken   | None (first incident)
+Accidental damage (first incident in 12 months)   | None
+Accidental damage (repeat within 12 months)       | Up to 50% of repair cost
+Loss due to negligence (e.g. left unattended in   | Up to 100% of current
+public place or unlocked car)                      | depreciated value
+Deliberate damage or misuse                       | 100% of repair or
+                                                  | replacement cost, plus
+                                                  | possible disciplinary action
+Failure to report loss within 24 hours            | May be treated as negligence
+
+The depreciated value is calculated by Finance using straight-line
+depreciation over the device's refresh cycle. Recovery may be made through
+payroll deduction with the employee's consent, or through the final
+settlement, as permitted by law.
+
+12.3 Replacement
+A replacement device is normally provided within 3 working days of reporting.
+A loaner device may be provided in the meantime where available.
+
+======================================================================
+13. REPAIRS AND SUPPORT
+======================================================================
+
+- All repairs must be arranged through the IT Helpdesk. Employees must not
+  take Company devices to outside repair shops.
+- Before handing a device over for repair, employees should make sure their
+  work files are synced to Company cloud storage.
+- A loaner device will be provided if the repair is expected to take longer
+  than 2 working days, subject to availability.
+- Remote employees may be asked to courier devices to the nearest office.
+  Courier costs are paid by the Company.
+
+IT Helpdesk Service Levels:
+Priority  | Example                                     | Response Time
+----------|---------------------------------------------|---------------
+Critical  | Lost/stolen device, security incident,      | 1 hour
+          | cannot work at all                          |
+High      | Device not booting, no network access       | 4 working hours
+Medium    | Software issue, peripheral not working      | 1 working day
+Low       | New software or accessory request           | 3 working days
+
+======================================================================
+14. REMOTE AND HYBRID WORK
+======================================================================
+
+- Employees working remotely use the same Company-issued laptop and must
+  follow all security rules in this policy.
+- Home Wi-Fi networks should use WPA2 or WPA3 encryption and a strong
+  router password.
+- Company devices must not be connected to shared or public computers, and
+  Company data must not be printed on public printers.
+- Eligible remote employees may claim a one-time home office setup allowance
+  for items such as a monitor, chair or desk, as set by Finance. Items
+  purchased under the allowance belong to the employee unless stated
+  otherwise.
+- Employees must have IT approval before taking Company devices to another
+  country for work, as some countries have restrictions on encrypted
+  devices and data transfer.
+
+======================================================================
+15. TRANSFERS AND ROLE CHANGES
+======================================================================
+
+When an employee changes role, team or location:
+- Their manager must inform IT at least 5 working days in advance.
+- Equipment that is not needed in the new role must be returned.
+- Software licences and system access no longer needed will be removed.
+- Additional equipment for the new role will be issued per Section 5.
+
+======================================================================
+16. RETURN OF ASSETS ON EXIT
+======================================================================
+
+16.1 Return Process
+- All Company assets must be returned on or before the last working day.
+- Remote employees will receive a prepaid courier kit and must ship assets
+  within 3 working days of their last working day.
+- IT will check each asset against the asset register and confirm its
+  condition.
+- The employee must not reset, wipe or reformat devices themselves. IT will
+  perform a secure wipe after any required data has been backed up.
+
+16.2 Personal Data
+Employees should remove personal files and log out of personal accounts
+(for example, personal iCloud, Google or browser accounts) before returning
+devices. Activation locks such as "Find My iPhone" must be disabled.
+
+16.3 Exit Clearance
+IT clearance is part of the HR exit clearance checklist. The full and final
+settlement will be processed only after IT confirms that all assets have been
+returned. The cost of unreturned or damaged assets will be recovered under
+Section 12.2.
+
+16.4 Purchase of Old Devices
+In some cases, the Company may offer an exiting employee or a current
+employee the option to buy their old device at its depreciated value when it
+reaches the end of its refresh cycle. All Company data will be securely wiped
+before transfer. This is at the Company's discretion and is not an
+entitlement.
+
+======================================================================
+17. ASSET DISPOSAL
+======================================================================
+
+- Retired devices are securely wiped using industry-standard data erasure
+  methods, or physically destroyed if they cannot be wiped.
+- A certificate of data destruction is kept for each disposed device.
+- Disposal is done only through certified e-waste recyclers, in line with
+  applicable environmental laws.
+- Devices still in working order may be donated to approved charities after
+  secure wiping, with Finance and IT approval.
+
+======================================================================
+18. ASSET AUDITS
+======================================================================
+
+- IT conducts an asset verification audit at least once a year.
+- Employees must respond to asset verification requests within 5 working
+  days, for example by confirming the asset tag or sharing a photo of the
+  device.
+- Assets that cannot be accounted for will be treated as lost and handled
+  under Section 12.
+
+======================================================================
+19. POLICY VIOLATIONS
+======================================================================
+
+Breaking this policy may lead to:
+- Removal of device access or privileges.
+- Recovery of costs as described in Section 12.2.
+- Disciplinary action, up to and including termination of employment.
+- Legal action where the law has been broken.
+
+The level of action depends on the seriousness of the violation, whether it
+was intentional, and whether it is a repeat offence.
+
+======================================================================
+20. FREQUENTLY ASKED QUESTIONS
+======================================================================
+
+Q: When will I get my laptop as a new joiner?
+A: On your first working day, after you sign the Asset Acknowledgement Form,
+   provided your manager raised the request at least 7 working days before
+   you joined.
+
+Q: Can I use my Company laptop for personal tasks?
+A: Limited, reasonable personal use is allowed (see Section 6.4), but avoid
+   storing personal files and never install unapproved software.
+
+Q: Am I eligible for a Company mobile phone?
+A: Company phones are provided to Sales, customer-facing staff, managers,
+   senior leadership and on-call support roles. Others may receive one with
+   department head approval for a business need.
+
+Q: My laptop is slow and old. Can I get a new one?
+A: Laptops are replaced every 3 to 4 years depending on type. If your device
+   is failing or cannot run required software, raise a ticket with IT for an
+   early replacement review.
+
+Q: I lost my laptop charger. What should I do?
+A: Raise a ticket with IT. One lost accessory per year is replaced free of
+   charge; further replacements are charged at current cost.
+
+Q: My laptop was stolen. Will I have to pay for it?
+A: If you took reasonable care, reported it within 24 hours and filed a
+   police report, you will not have to pay for the first incident. Losses
+   due to negligence may be recovered (see Section 12.2).
+
+Q: Can I install software myself?
+A: Only software from the approved list. For anything else, raise a request
+   through the IT ticketing portal for a security review.
+
+Q: Can I use ChatGPT or other AI tools for work?
+A: Only AI tools approved by IT Security may be used with Company data. Check
+   the approved list on the IT intranet page.
+
+Q: Can I access Company email on my personal phone?
+A: Yes, after registering the device and installing the Company's MDM or
+   app-protection profile (see Section 9).
+
+Q: Can I take my Company laptop abroad?
+A: For business travel or remote work from another country, get IT approval
+   first. Always carry the laptop as hand luggage.
+
+Q: What do I need to return when I leave?
+A: Every asset assigned to you, including the laptop, charger, phone, SIM,
+   monitors, accessories, access cards and security keys, by your last
+   working day.
+
+Q: Can I keep my laptop when I leave?
+A: Not by default. At the Company's discretion, you may be offered the
+   option to buy an end-of-life device at its depreciated value.
+
+Q: Who do I contact for IT asset issues?
+A: The IT Helpdesk via the IT ticketing portal, itsupport@company.com, or
+   the internal IT support chat channel. For security incidents, also email
+   security@company.com.
+
+======================================================================
+21. POLICY REVIEW AND CONTACTS
+======================================================================
+
+This policy is reviewed every year by the IT Department and Human Resources,
+or earlier if there are changes in technology, law or business needs.
+Employees will be informed of significant changes by email and on the HR
+intranet.
+
+For questions about this policy, contact:
+- IT Helpdesk: itsupport@company.com
+- IT Security: security@company.com
+- Human Resources: hr@company.com
+
+----------------------------------------------------------------------
+ACKNOWLEDGEMENT
+
+I confirm that I have read and understood the IT Assets Policy and agree to
+follow it. I understand that Company assets issued to me remain the property
+of the Company and must be returned on request or when my employment ends.
+
+Employee Name: ______________________   Employee ID: ______________
+
+Signature: __________________________   Date: _____________________
+----------------------------------------------------------------------
