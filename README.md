@@ -38,6 +38,32 @@ jupyter notebook context_and_prompt_engineering_openai.ipynb
 Run the cells **top to bottom** — later cells depend on objects defined earlier.
 
 ---
+### Windows
+
+Open **PowerShell** (not Command Prompt):
+
+```powershell
+git clone https://github.com/mahadevTW/ai-cohort-new
+cd ai-cohort
+powershell -ExecutionPolicy Bypass -File setup.ps1
+```
+
+> If PowerShell blocks the script, run this once first:
+> ```powershell
+> Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+> ```
+> Then re-run `setup.ps1`.
+
+The script will:
+- Find or prompt you to install Python 3.12+
+- Create a virtual environment
+- Install all dependencies
+- Register the (Python 3.12)** Jupyter kernel
+- Install the required VS Code extensions
+- Execute `notebooks/test_setup.ipynb` in the terminal to confirm everything works
+
+If all steps show `[OK]`, you are ready.
+
 
 ## The model
 
