@@ -52,6 +52,7 @@
     const input = document.getElementById("user-input");
     const sendBtn = document.getElementById("send-btn");
     const welcome = document.getElementById("welcome");
+    let conversationId = null;
 
     function timeNow() {
       return new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
@@ -59,7 +60,7 @@
 
     function renderMarkdown(text) {
       if (window.marked && window.DOMPurify) {
-        return DOMPurify.sanitize(marked.parse(text));
+        return DOMPurify.sanitize(marked.parse(String(text ?? "")));
       }
       const div = document.createElement("div");
       div.textContent = text;
@@ -113,11 +114,15 @@
       const typing = addTyping();
       sendBtn.disabled = true;
       try {
-        const res = await fetch(`/chat?user_input=${encodeURIComponent(text)}`);
+        const params = new URLSearchParams({ user_input: text });
+        if (conversationId) params.set("conversation_id", conversationId);
+        const res = await fetch(`/chat?${params}`);
         if (!res.ok) throw new Error(`Server error (${res.status})`);
         const data = await res.json();
         typing.remove();
-        addMessage("assistant", data.response);
+        if (data.conversation_id) conversationId = data.conversation_id;
+        const reply = typeof data.response === "string" ? data.response : data.response?.content;
+        addMessage("assistant", reply ?? "");
       } catch (err) {
         typing.remove();
         addMessage("assistant", `Sorry, something went wrong: ${err.message}`, { isError: true });
