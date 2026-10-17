@@ -43,7 +43,7 @@ Run the cells **top to bottom** — later cells depend on objects defined earlie
 Open **PowerShell** (not Command Prompt):
 
 ```powershell
-git clone https://github.com/mahadevTW/ai-cohort
+git clone https://github.com/mahadevTW/ai-cohort-new
 cd ai-cohort
 powershell -ExecutionPolicy Bypass -File setup.ps1
 ```
