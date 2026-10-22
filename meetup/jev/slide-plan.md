@@ -247,6 +247,32 @@ Software needs:  YES
 
 ---
 
+## Slide 5a — Generative AI vs Decision AI `[NEW — from details.md]`
+
+*Place right after Slide 5. It closes the structured-output argument visually.
+Renumber when the deck is built.*
+
+```mermaid
+flowchart TD
+    APP["AI APPLICATION"] --> GEN["GENERATIVE AI<br/>GPT / Claude / etc.<br/>generates things"]
+    APP --> DEC["DECISION AI<br/>Jev<br/>evaluates things"]
+    GEN --> T["text"]
+    GEN --> CO["code"]
+    GEN --> RE["reasoning"]
+    DEC --> CH["choice"]
+    DEC --> SC["score"]
+    DEC --> NO["noul"]
+    T & CO & RE --> HA["Humans / agents"]
+    CH & SC & NO --> SW["Software"]
+```
+
+### Say
+
+> "LLMs generate tokens. Jev evaluates questions. One is built for humans and agents to
+> read; the other for software to branch on."
+
+---
+
 # SECTION 3 — THE DECISION PROBLEM (13–22 min)
 
 ---
@@ -339,6 +365,33 @@ System Two  →  reasoning, generation        (LLM)
 
 Jev does not replace System Two. It is optimised for a different class of work.
 
+### Diagram — System One vs System Two *(replaces `system1vs2.png`)*
+
+```mermaid
+flowchart LR
+    subgraph S1["SYSTEM ONE = Jev"]
+        direction TB
+        A1["See a smiling face"] --> A2["Instantly: friendly"]
+        A2 --> A3["Fast, automatic, effortless<br/>(but systematically biased)"]
+    end
+    subgraph S2["SYSTEM TWO = LLM"]
+        direction TB
+        B1["17 x 24 = ?"] --> B2["Work it out step by step"]
+        B2 --> B3["Slow, deliberate, effortful<br/>(but reasons it through)"]
+    end
+    S1 ~~~ S2
+```
+
+### Optional aside, one line only *(replaces the tweet screenshot)*
+
+Source: @ShenSeanChen on X — "intuition is compressed reasoning." Skip it if you are
+short on time; it is a speculative direction, not something Jev does today.
+
+```mermaid
+flowchart LR
+    R["Reasoning<br/>(LLM, System Two)"] --> M["Memory<br/>(past reasoning persisted)"] --> I["Intuition<br/>(fast, System One)"]
+```
+
 ---
 
 ## Slide 9 — What Is Jev?
@@ -353,15 +406,14 @@ for Calibrated Decisions) to address overconfidence and mode-dropping in RLHF-tu
 
 ### Visual
 
-```text
-             ┌── Q1 → typed answer + probabilities
-State ───────┼── Q2 → typed answer + probabilities
-             ├── Q3 → typed answer + probabilities
-             └── Q4 → typed answer + probabilities
-                      ↓
-                 YOUR CODE
-                      ↓
-               business action
+```mermaid
+flowchart LR
+    S["State<br/>(unstructured text)"] --> Q1["Q1 → typed answer + probabilities"]
+    S --> Q2["Q2 → typed answer + probabilities"]
+    S --> Q3["Q3 → typed answer + probabilities"]
+    S --> Q4["Q4 → typed answer + probabilities"]
+    Q1 & Q2 & Q3 & Q4 --> C["YOUR CODE"]
+    C --> B["business action"]
 ```
 
 Questions run **in parallel and in isolation** against the same state. Adding questions
@@ -497,6 +549,39 @@ A Noul takes a **statement, not a question**.
 
 Noul returns a probability and **no separate confidence field**. For a Noul, distance
 from 0.5 *is* your confidence signal.
+
+---
+
+## Slide 13b — Where Calibration Comes From: RLHF → RLCD `[NEW — replaces RLHS.png + RLCD.png]`
+
+*Place before Slide 14. Two minutes, conceptual only — no reward-model or RL math.
+Renumber when the deck is built.*
+
+```mermaid
+flowchart TD
+    P1["Phase 1 · Pretraining<br/>the world's text:<br/>docs, books, code, chat"] --> P2["Phase 2 · RLHF<br/>Reinforcement Learning from Human Feedback<br/>humans rate the answers"]
+    P2 --> L["Chat LLM<br/>rewarded for answers humans prefer"]
+    P1 -.->|"different phase 2"| R["Phase 2 · RLCD<br/>Reinforcement Learning for Calibrated Decisions<br/>probabilities scored against real outcomes"]
+    R --> J["Jev<br/>rewarded for honest uncertainty"]
+```
+
+### Quote from TypeSafe's docs — put this on the slide verbatim
+
+> "System One models are trained for calibrated decisions: their probabilities are
+> optimized against outcomes to reflect uncertainty. **Calibration is measured across
+> groups of predictions; it does not guarantee that an individual answer is correct.**"
+
+### Say
+
+> "A chat model is rewarded for answers people like. Jev is rewarded for being right
+> about how sure it is. That's what makes the confidence number worth gating on."
+
+### Caveat
+
+The phase 1 → RLCD branch is the conceptual contrast from the source video. TypeSafe has
+not published Jev's full training recipe — say "trained for calibrated decisions," not
+"here is exactly how." Also note from the same docs page: **text input only**
+(strings, JSON objects, arrays of text — no images, audio or video).
 
 ---
 
@@ -1073,16 +1158,18 @@ Fits: customer support, internal IT tickets, incident routing, document routing.
 
 ## Slide 29 — Pattern 2: Model Routing
 
-```text
-User request
-     ↓
-    Jev  — "how hard is this?"
-     ↓
-┌────┼─────────┐
-▼    ▼         ▼
-Small Medium  Frontier
-LLM    LLM      LLM
+```mermaid
+flowchart TD
+    REQ["Incoming request"] --> J["Jev<br/>'What is this? How hard is it?'"]
+    J -->|"simple"| CODE["Plain code path<br/>(no LLM call)"]
+    J -->|"moderate"| SM["Small / medium LLM"]
+    J -->|"complex"| FR["Frontier LLM"]
+    J -->|"low confidence"| ESC["Escalate: bigger LLM or human"]
+    FR --> EXP["Explanation / generated answer"]
 ```
+
+Use the confidence from the response to decide whether to rely on the routing decision
+at all.
 
 ### Why this is the most defensible pattern
 
@@ -1435,7 +1522,8 @@ you are visibly careful about this than if every number is impressive.
 # Appendix D — Things NOT to Spend Time On
 
 * Transformer mathematics, attention equations
-* Training implementation details, RLCD internals
+* Training implementation details — RLHF → RLCD is covered conceptually on Slide 13b
+  only; no reward-model or RL math
 * Jev's undisclosed architecture — say "parallel evaluation" and stop
 * Point-by-point competitor comparison
 * Pricing across every provider
@@ -1461,3 +1549,224 @@ Verify these again close to the session date; Jev is early-access and details mo
 * Jev benchmarks — what the numbers show: <https://jev-ai.org/blog/jev-benchmarks/>
 * Langfuse — using Jev for evals: <https://langfuse.com/blog/2026-09-18-using-typesafes-jev-for-evals>
 * AWS Strands Decider — open reference for the decision-model category
+
+---
+
+# Appendix F — Brand & Slide Design Guideline (Rebind Rise)
+
+Derived from `main_logo.png` (1250×199 RGBA). The logo is an **indigo → cyan** gradient
+on a transparent background. The "measured" colors below were sampled from its pixels;
+the "derived" ones are added so the deck has a text-safe cyan, dark backgrounds and
+status colors the logo does not contain. Every text/background pairing was checked
+against WCAG contrast.
+
+## F1. Palette
+
+### Brand colors (measured from the logo)
+
+| Role | Name | Hex | Where it appears in the logo |
+| ---- | ---- | --- | ---------------------------- |
+| **Primary** | Rebind Indigo | `#364E96` | "Rebind" wordmark, left half of the RR mark |
+| Primary, deep | Deep Indigo | `#293873` | Darkest shade of the RR mark |
+| **Accent** | Rise Cyan | `#12A2DE` | "Rise" wordmark, tagline "Learn. Build." |
+| Accent, light | Sky Cyan | `#64D1E5` | Arrow tip and highlights |
+
+### Derived colors (not in the logo — added for legibility)
+
+| Role | Name | Hex | Use |
+| ---- | ---- | --- | --- |
+| Ink / dark background | Midnight | `#0F1B3D` | Body text on light slides; background on dark slides |
+| Cyan for text | Ocean | `#0B7BAA` | Cyan-family text or links on light backgrounds |
+| Muted text | Slate | `#5B6785` | Captions, sources, footers |
+| Slide background | Mist | `#F4F7FC` | Default slide background |
+| Panel fill | Tint | `#E6ECF8` | Cards, table headers, code-block backing |
+| Page white | White | `#FFFFFF` | Cards on Mist, text on indigo or midnight |
+
+### Status colors (use sparingly, and only with their label word)
+
+| Meaning | Hex | Use in this deck |
+| ------- | --- | ---------------- |
+| Success | `#15803D` | "✓ good for", "independent benchmark" |
+| Caution | `#B45309` | "vendor claim", "early access", `[FIXED]`-style warnings |
+| Danger | `#B3261E` | "✗ breaks on", "do not say" |
+
+### Gradient
+
+`linear-gradient(90deg, #364E96 0%, #12A2DE 100%)` — the logo's own left-to-right sweep.
+Use it for **one** thing per slide at most: the title slide background, a section-divider
+bar, or the key full-screen statement. Never behind body text.
+
+## F2. Semantic mapping — color carries the talk's argument
+
+The central narrative is *LLM → generates, Jev → decides, Code → controls*. Give each a
+fixed color and use it everywhere (diagrams, tables, code callouts), so the audience
+learns the mapping without being told.
+
+| Concept | Color | Hex |
+| ------- | ----- | --- |
+| **LLM** (generate, System Two) | Rebind Indigo | `#364E96` |
+| **Jev** (decide, System One) | Rise Cyan | `#12A2DE` |
+| **Your code** (control) | Midnight | `#0F1B3D` |
+| Human / escalation | Caution | `#B45309` |
+
+Rule: **never swap these between slides.** If the LLM is indigo on slide 4, it is indigo
+on slide 30.
+
+## F3. Contrast — what is safe to pair (measured)
+
+| Text on background | Ratio | Verdict |
+| ------------------ | ----: | ------- |
+| Midnight `#0F1B3D` on White | 16.9 | Body text |
+| Indigo `#364E96` on White | 7.8 | Headings, emphasis |
+| Indigo `#364E96` on Mist `#F4F7FC` | 7.3 | Headings, emphasis |
+| Slate `#5B6785` on Mist | 5.3 | Captions only |
+| Ocean `#0B7BAA` on White | 4.7 | Cyan text, 18pt+ preferred |
+| White on Indigo `#364E96` | 7.8 | Title bars, buttons |
+| White on Midnight | 16.9 | Dark-slide body text |
+| Sky Cyan `#64D1E5` on Midnight | 9.5 | Dark-slide accents |
+| Midnight on Rise Cyan `#12A2DE` | 5.8 | Text inside cyan shapes |
+| **Rise Cyan `#12A2DE` on White** | **2.9** | **Fails. Decorative or ≥ 24pt bold only.** |
+| **White on Rise Cyan `#12A2DE`** | **2.9** | **Fails. Use Midnight text on cyan instead.** |
+
+The two bold rows are the trap: the logo's own cyan is too light for white text and for
+small text on white. The logo gets away with it because the wordmark is huge; body text
+cannot. Use Ocean for cyan-family text, or put Midnight text inside cyan shapes.
+
+For a projector in a bright room, aim for ≥ 7:1 on anything the audience must read.
+
+## F4. Slide templates
+
+Three templates are enough for the whole deck.
+
+| Template | Background | Text | When |
+| -------- | ---------- | ---- | ---- |
+| **Standard** | Mist `#F4F7FC` | Midnight body, Indigo headings | Most slides |
+| **Statement** | Midnight `#0F1B3D` | White, one Sky Cyan key phrase | Full-screen claims (Slide 23, 34, section openers) |
+| **Demo / code** | Midnight `#0F1B3D` | Code in White, keywords Sky Cyan | Live-demo and code slides, so the terminal and the slide feel continuous |
+
+Title slide: gradient background, logo on a White rounded panel (the logo's indigo does
+not read against a dark or gradient ground), title in White. **The logo appears on the
+title slide only — not on any other slide.**
+
+## F5. Typography
+
+The logo wordmark is a squared geometric sans, so pair it with a clean sans.
+
+| Use | Font | Size |
+| --- | ---- | ---- |
+| Slide title | Inter or Poppins, Semibold | 40–44pt |
+| Body | Inter, Regular | 24–28pt, **never below 22pt** |
+| Table text | Inter | 20pt minimum |
+| Code | JetBrains Mono or Fira Code | 20–22pt, max ~12 lines per slide |
+| Caption / source | Inter | 16pt, Slate |
+
+If a table does not fit at 20pt, split it or move it to a backup slide. Shrinking the
+font is how decks become unreadable from the back row.
+
+## F6. Layout rules
+
+* **One idea per slide.** If the title needs "and", it is two slides.
+* Maximum ~6 lines of text, or one diagram, or one code block per slide. Not two.
+* Left-align text. Center only full-screen statements.
+* Margins ≥ 5% of the slide width on every side.
+* No logo and no tagline on content slides. Footer is the slide number only, bottom-left,
+  in Slate.
+* One accent per slide. A slide with indigo, cyan, amber and red all at once says nothing.
+
+## F7. Claim-label chips (ties to Appendix C)
+
+Put a small colored chip next to every number so the source category is visible at a
+glance. Same text label as Appendix C; the color is the redundant cue, so the deck still
+works in greyscale and for color-blind viewers.
+
+| Chip | Fill | Text |
+| ---- | ---- | ---- |
+| VENDOR CLAIM | `#FDF0DD` | `#92400E` (6.3:1) |
+| OUR MEASUREMENT | `#E6ECF8` | `#364E96` (6.6:1) |
+| INDEPENDENT | `#DDF3E4` | `#166534` (6.1:1) |
+| CONCEPTUAL | `#E6F6FD` | `#0F1B3D` (15.2:1) |
+
+Chip text uses darker shades than the plain status colors in F1, because the tinted
+fills lower the contrast of the standard amber and green below 4.5:1.
+
+## F8. Diagram styling — mermaid theme
+
+Paste this as the first lines of any mermaid diagram in this plan to render on-brand.
+In Mermaid Live, Slidev, Marp or Mermaid-enabled Notion/Obsidian, it applies as written.
+
+```text
+%%{init: {
+  "theme": "base",
+  "themeVariables": {
+    "fontFamily": "Inter, Arial, sans-serif",
+    "fontSize": "18px",
+    "primaryColor": "#E6ECF8",
+    "primaryBorderColor": "#364E96",
+    "primaryTextColor": "#0F1B3D",
+    "secondaryColor": "#E6F6FD",
+    "secondaryBorderColor": "#12A2DE",
+    "secondaryTextColor": "#0F1B3D",
+    "tertiaryColor": "#F4F7FC",
+    "tertiaryBorderColor": "#5B6785",
+    "tertiaryTextColor": "#0F1B3D",
+    "lineColor": "#5B6785",
+    "clusterBkg": "#F4F7FC",
+    "clusterBorder": "#5B6785",
+    "edgeLabelBackground": "#FFFFFF"
+  }
+}}%%
+```
+
+Then use these `classDef` lines to apply the semantic mapping from F2:
+
+```text
+classDef llm   fill:#364E96,stroke:#293873,color:#FFFFFF;
+classDef jev   fill:#12A2DE,stroke:#0B7BAA,color:#0F1B3D;
+classDef code  fill:#0F1B3D,stroke:#0F1B3D,color:#FFFFFF;
+classDef human fill:#FDF0DD,stroke:#B45309,color:#92400E;
+```
+
+Example — the Slide 34 takeaway, on-brand:
+
+```mermaid
+%%{init: {"theme":"base","themeVariables":{"fontFamily":"Inter, Arial, sans-serif","primaryColor":"#E6ECF8","primaryBorderColor":"#364E96","primaryTextColor":"#0F1B3D","lineColor":"#5B6785"}}}%%
+flowchart TD
+    E["User / event"] --> J["Jev<br/>decisions"]
+    E --> L["LLM<br/>reasoning"]
+    J --> C["Your code"]
+    L --> C
+    C --> A["Business action"]
+    classDef llm   fill:#364E96,stroke:#293873,color:#FFFFFF;
+    classDef jev   fill:#12A2DE,stroke:#0B7BAA,color:#0F1B3D;
+    classDef code  fill:#0F1B3D,stroke:#0F1B3D,color:#FFFFFF;
+    class L llm;
+    class J jev;
+    class C code;
+```
+
+Mermaid is for drafting. For the final deck, export each diagram to SVG and place it, or
+redraw it natively in your slide tool using the hex codes above.
+
+## F9. Do / Don't
+
+| Do | Don't |
+| -- | ----- |
+| Use Ocean `#0B7BAA` for cyan text on light slides | Put white text on Rise Cyan (2.9:1) |
+| Show the logo once, on the title slide, on a white panel | Repeat the logo or tagline on every slide, or place it directly on Midnight or the gradient |
+| Use the gradient once per slide at most | Put the gradient behind body text or tables |
+| Keep LLM = indigo, Jev = cyan, Code = midnight everywhere | Recolor concepts to make a slide look varied |
+| Pair status colors with a word ("VENDOR CLAIM") | Rely on color alone to convey meaning |
+| Export diagrams as SVG | Paste screenshots of third-party sources into the deck |
+
+## F10. Implementation checklist
+
+- [ ] Copy `main_logo.png` into `meetup/jev/` and ask Rebind Rise for an SVG and a
+      white/knocked-out version. The PNG has a transparent background, so a one-color
+      white logo is only needed if you later decide to put the logo on a dark ground.
+      With the logo on the title slide only, the PNG on a white panel is enough.
+- [ ] Define the palette as theme colors in the slide tool (Google Slides, Keynote,
+      PowerPoint, Slidev or Marp), so slides pick colors from the theme instead of hex.
+- [ ] Build the three templates from F4 as slide masters.
+- [ ] Apply the F8 init block to each mermaid diagram, export to SVG and place it.
+- [ ] Do a back-row legibility check: project the deck, stand at the far wall, and read
+      Slide 3, Slide 12 and the code slide.

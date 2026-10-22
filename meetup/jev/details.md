@@ -6,7 +6,7 @@ Jev -> by default has structural model
 
 Faster in latency, 10 times faster than Opus
 Lower in cost --> 100 times opus
-## it is designed as a different primitive: a model that makes decisions for software rather than generating text for humans. TypeSafe calls this class “System One Models.”
+## it is designed as a different primitive: a model that makes decisions for software rather than generating text for humans. TypeSafe calls this class “System One Models.    ”
 
 Jev is specifically trained using **Reinforcement Learning for Calibrated Decisions (RLCD)**,
 
