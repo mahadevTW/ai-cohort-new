@@ -262,6 +262,23 @@
       }
     });
     input.addEventListener("input", autosize);
+
+    async function loadHistory() {
+      try {
+        const res = await fetch("/messages");
+        if (!res.ok) throw new Error(`Request failed (${res.status})`);
+        const data = await res.json();
+        for (const m of data.messages ?? []) {
+          if ((m.role === "user" || m.role === "assistant") && m.content) {
+            addMessage(m.role, m.content);
+          }
+        }
+      } catch (err) {
+        addMessage("assistant", "Could not load previous messages: " + err.message, { error: true });
+      }
+    }
+
+    loadHistory();
   </script>
 </body>
 </html>

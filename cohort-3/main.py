@@ -8,6 +8,8 @@ from dotenv import load_dotenv
 from pathlib import Path
 import uvicorn
 import os
+from db.models import Message
+from db.db import get_all_messages
 app  = FastAPI()
 load_dotenv()
 api_key = os.environ.get("OPENAI_API_KEY")
@@ -25,6 +27,11 @@ def read_root(request: Request):
 def chat(message:str="hello"):
     chat_response = openai_client.chat(message)
     return {"message": chat_response}
+
+@app.get("/messages")
+def get_messages():
+    messages = get_all_messages()
+    return {"messages": [{"role": m.role, "content": m.content} for m in messages]}
 
 @app.get("/health")
 def health_check():
