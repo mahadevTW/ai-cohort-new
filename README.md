@@ -14,56 +14,132 @@ backend engineer who is new to AI engineering.
 
 ## Setup
 
-```bash
-cd ~/project/learn-ai
+You need **Python 3.12+** and an **OpenAI API key**. Pick one path: the automated script (recommended) or the manual steps.
 
-# 1. dependencies (a venv already exists at ./.venv)
-pip install openai jupyter
-
-# 2. your API key
-export OPENAI_API_KEY="your-key"
-
-# 3. launch
-jupyter notebook context_and_prompt_engineering_openai.ipynb
-```
-
-To use the venv that is already here:
+### Get the code
 
 ```bash
-source .venv/bin/activate
-export OPENAI_API_KEY="your-key"
-jupyter notebook context_and_prompt_engineering_openai.ipynb
+git clone https://github.com/mahadevTW/ai-cohort-new
+cd ai-cohort-new
 ```
 
-Run the cells **top to bottom** — later cells depend on objects defined earlier.
+Run every command below **from this repo root** (the folder that contains `requirements.txt`).
 
----
-### Windows
+### Option A — Automated setup (script)
 
-Open **PowerShell** (not Command Prompt):
+The script finds or installs Python 3.12+, creates the `venv/` virtual environment, installs `requirements.txt`, registers the Jupyter kernel, installs the VS Code Jupyter/Python extensions, and runs `notebook/test_setup.ipynb` to verify. It is safe to re-run.
+
+**Mac / Linux**
+
+```bash
+bash setup.sh
+```
+
+**Windows** — open **PowerShell** (not Command Prompt):
 
 ```powershell
-git clone https://github.com/mahadevTW/ai-cohort-new
-cd ai-cohort
 powershell -ExecutionPolicy Bypass -File setup.ps1
 ```
 
-> If PowerShell blocks the script, run this once first:
+> If PowerShell blocks the script, run this once, then re-run `setup.ps1`:
 > ```powershell
 > Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 > ```
-> Then re-run `setup.ps1`.
 
-The script will:
-- Find or prompt you to install Python 3.12+
-- Create a virtual environment
-- Install all dependencies
-- Register the (Python 3.12)** Jupyter kernel
-- Install the required VS Code extensions
-- Execute `notebooks/test_setup.ipynb` in the terminal to confirm everything works
+If every step shows a tick / `[OK]`, you are ready. Skip to [Set your API key](#set-your-api-key).
 
-If all steps show `[OK]`, you are ready.
+### Option B — Manual setup
 
+**1. Create the virtual environment** (once)
+
+| | Command |
+|---|---|
+| Mac / Linux | `python3 -m venv venv` |
+| Windows (PowerShell or cmd) | `py -3.12 -m venv venv` |
+
+**2. Activate it** (every new terminal)
+
+| | Command |
+|---|---|
+| Mac / Linux (bash / zsh) | `source venv/bin/activate` |
+| Windows PowerShell | `venv\Scripts\Activate.ps1` |
+| Windows Command Prompt | `venv\Scripts\activate.bat` |
+
+Your prompt shows `(venv)` when it is active. Check with `python --version` (must be 3.12+).
+
+**3. Install dependencies** (once, or after `requirements.txt` changes)
+
+```bash
+python -m pip install --upgrade pip
+python -m pip install -r requirements.txt
+python -m pip install jupyter ipykernel python-dotenv
+```
+
+**4. Register the Jupyter kernel** (once, so VS Code / Jupyter can find this environment)
+
+```bash
+python -m ipykernel install --user --name=meetup --display-name="AI Meetup (Python 3.12)"
+```
+
+**5. Deactivate** when you are done (any OS)
+
+```bash
+deactivate
+```
+
+To start over, deactivate, delete the `venv` folder (`rm -rf venv` on Mac/Linux, `Remove-Item -Recurse -Force venv` on Windows), and repeat from step 1.
+
+### Set your API key
+
+Copy the example file and put your key in it (`.env` is gitignored):
+
+| | Command |
+|---|---|
+| Mac / Linux | `cp .env.example .env` |
+| Windows PowerShell | `Copy-Item .env.example .env` |
+
+Then edit `.env` so it contains `OPENAI_API_KEY=sk-...`.
+
+Or set it for the current terminal session only:
+
+| | Command |
+|---|---|
+| Mac / Linux | `export OPENAI_API_KEY="your-key"` |
+| Windows PowerShell | `$env:OPENAI_API_KEY="your-key"` |
+| Windows Command Prompt | `set OPENAI_API_KEY=your-key` |
+
+### Daily workflow
+
+Each time you come back to the project:
+
+**Mac / Linux**
+
+```bash
+cd ai-cohort-new
+source venv/bin/activate
+jupyter notebook context_and_prompt_engineering_openai.ipynb
+```
+
+**Windows (PowerShell)**
+
+```powershell
+cd ai-cohort-new
+venv\Scripts\Activate.ps1
+jupyter notebook context_and_prompt_engineering_openai.ipynb
+```
+
+Week notebooks work the same way, e.g. `jupyter notebook week-01-llm-foundations/week1.ipynb`.
+
+**VS Code:** launch it from the activated terminal with `code .`, open a notebook, then pick the **AI Meetup (Python 3.12)** kernel from the selector at the top right and run cells with `Shift+Enter`.
+
+Run the cells **top to bottom** — later cells depend on objects defined earlier.
+
+### Troubleshooting
+
+* **`python` / `python3` not found** — on Windows use `py -3.12`; on Mac install with `brew install python@3.12`.
+* **PowerShell: "running scripts is disabled"** — run the `Set-ExecutionPolicy ... RemoteSigned` command above.
+* **Kernel missing in VS Code / Jupyter** — activate the venv and re-run step 4, then reload VS Code.
+* **`pip install` fails with SSL errors (corporate network)** — add `--trusted-host pypi.org --trusted-host files.pythonhosted.org`.
 
 ## The model
 
