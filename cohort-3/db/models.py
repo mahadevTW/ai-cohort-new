@@ -11,6 +11,7 @@ class Message(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     role= Column(String(50), nullable=False)
     content = Column(Text, nullable=False)
+    token_usage = Column(Integer, nullable=False)
     timestamp = Column(DateTime, nullable=False)
 
 # at start if this table does not exist, create it

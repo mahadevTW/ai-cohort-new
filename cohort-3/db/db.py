@@ -5,9 +5,9 @@ from datetime import datetime
 
 Session = sessionmaker(bind=engine)
 
-def insert_message(role, content):
+def insert_message(role, content, token_usage):
     session = Session()
-    message = Message(role=role, content=content, timestamp=datetime.now())
+    message = Message(role=role, content=content, token_usage=token_usage, timestamp=datetime.now())
     session.add(message)
     session.commit()
     session.close()

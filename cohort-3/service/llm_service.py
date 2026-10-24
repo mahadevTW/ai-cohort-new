@@ -27,10 +27,17 @@ class OpenAIClient:
             }
         )
         r = response.json()
+        usage = r.get("usage", {})
+        input_tokens = usage.get("prompt_tokens", 0)
+        output_tokens = usage.get("completion_tokens", 0)
+        print("input tokens:"+ str(usage.get("prompt_tokens", 0)))
+        print("output tokens:"+ str(usage.get("completion_tokens", 0)))
+        print("total tokens:"+ str(usage.get("total_tokens", 0)))
+        
         response = r["choices"][0]["message"]["content"]
         # self.conversation_history.append({"role": "user", "content": message})
         # self.conversation_history.append({"role":"assistant", "content": response})
-        insert_message("user", message)
-        insert_message("assistant", response)
+        insert_message("user", message, input_tokens)
+        insert_message("assistant", response, output_tokens)
         return response
         
