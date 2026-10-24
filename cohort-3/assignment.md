@@ -4,3 +4,7 @@
 3. When user clicks on new conversation, it should start new conversation
 4. LLM should only consider history of message in that conversation
 5. Use DB designed as discussed
+
+5. Implement conversation level token usage
+6. show token usage in every message
+7. 
