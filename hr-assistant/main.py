@@ -29,8 +29,8 @@ def chat_with_hr_assistant(user_input: str, conversation_id: str=None):
     response = call_llm(user_input,conversation_id=conversation_id)
     # save user message and assistant response in the database
     # read in and out tokens
-    create_chat_message(conversation_id=response["conversation_id"], text=user_input, role="user", tokens_spent=response["input_tokens"])
-    create_chat_message(conversation_id=response["conversation_id"], text=response["content"], role="assistant", tokens_spent=response["output_tokens"])
+    # create_chat_message(conversation_id=response["conversation_id"], text=user_input, role="user", tokens_spent=response["input_tokens"])
+    # create_chat_message(conversation_id=response["conversation_id"], text=response["content"], role="assistant", tokens_spent=response["output_tokens"])
     
     # update conversation with total tokens
     total_tokens = response["input_tokens"] + response["output_tokens"]
@@ -38,6 +38,6 @@ def chat_with_hr_assistant(user_input: str, conversation_id: str=None):
     
     # return the conversation id along with the response
     return {"response": response, "conversation_id": response["conversation_id"], "input_tokens": response["input_tokens"], "output_tokens": response["output_tokens"], "total_tokens": total_tokens}
-
+x
 if __name__ == "__main__":
     uvicorn.run("main:app", host="localhost", port=8000, reload=True)

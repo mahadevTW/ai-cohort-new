@@ -5,11 +5,11 @@
 #   1. Verifies you are in the right directory
 #   2. Finds Python 3.12+
 #   3. Creates a virtual environment (skips if it already exists)
-#   4. Installs all dependencies from requirements.txt
+#   4. Installs all dependencies from requirements.txt (+ jupyter, ipykernel, python-dotenv)
 #   5. Registers the Jupyter kernel
 #   6. Installs VS Code extensions (skips if VS Code is not in PATH)
 #   7. Verifies all package imports
-#   8. Executes notebooks/test_setup.ipynb end-to-end on the terminal
+#   8. Executes notebook/test_setup.ipynb end-to-end on the terminal
 
 # ── Colour helpers ────────────────────────────────────────────────────────────
 function ok($msg)   { Write-Host "  [OK]   $msg" -ForegroundColor Green }
@@ -29,7 +29,7 @@ if (-not (Test-Path "requirements.txt")) {
     Write-Host ""
     Write-Host "  Please run this script from the repo root:" -ForegroundColor Yellow
     Write-Host ""
-    Write-Host "    cd ai-cohort"
+    Write-Host "    cd ai-cohort-new"
     Write-Host "    powershell -ExecutionPolicy Bypass -File setup.ps1"
     Write-Host ""
     exit 1
@@ -257,19 +257,31 @@ if ($LASTEXITCODE -ne 0) {
     Write-Host ""
     exit 1
 }
+
+info "Installing Jupyter tooling (jupyter, ipykernel, python-dotenv) ..."
+python -m pip install jupyter ipykernel python-dotenv --quiet
+if ($LASTEXITCODE -ne 0) {
+    err "Jupyter tooling installation failed."
+    Write-Host ""
+    Write-Host "  Try running it manually to see the full error:" -ForegroundColor Yellow
+    Write-Host "    venv\Scripts\Activate.ps1"
+    Write-Host "    pip install jupyter ipykernel python-dotenv"
+    Write-Host ""
+    exit 1
+}
 ok "All packages installed"
 
 # ── Step 4: Register Jupyter kernel ───────────────────────────────────────────
 Write-Host ""
 Write-Host "  [4/7] Registering Jupyter kernel" -ForegroundColor White
 
-python -m ipykernel install --user --name=meetup --display-name="AI Meetup ($PYTHON_VERSION)" 2>$null
+python -m ipykernel install --user --name=meetup --display-name="AI Meetup (Python 3.12)" 2>$null
 if ($LASTEXITCODE -eq 0) {
-    ok "Kernel 'ai-cohort ($PYTHON_VERSION)' registered"
+    ok "Kernel 'AI Meetup (Python 3.12)' registered"
 } else {
     warn "Kernel registration reported an issue -- notebooks may still work"
     warn "If the kernel is missing later, run:"
-    Write-Host "    python -m ipykernel install --user --name=meetup --display-name=`"AI Meetup ($PYTHON_VERSION)`""
+    Write-Host "    python -m ipykernel install --user --name=meetup --display-name=`"AI Meetup (Python 3.12)`""
 }
 
 # ── Step 5: VS Code extensions ────────────────────────────────────────────────
@@ -325,10 +337,12 @@ except Exception:
 }
 
 Check-Import "openai"
+Check-Import "tiktoken"
+Check-Import "httpx"
+Check-Import "fastapi"
+Check-Import "python-dotenv" "dotenv"
 Check-Import "jupyter" "jupyter_core"
 Check-Import "ipykernel"
-Check-Import "pandas"
-Check-Import "requests"
 Check-Import "notebook"
 
 if ($importErrors -gt 0) {
@@ -344,7 +358,7 @@ if ($importErrors -gt 0) {
 
 # ── Step 7: Execute verification notebook ─────────────────────────────────────
 Write-Host ""
-Write-Host "  [7/7] Running notebooks/test_setup.ipynb" -ForegroundColor White
+Write-Host "  [7/7] Running notebook/test_setup.ipynb" -ForegroundColor White
 info "Executing notebook -- this takes about 10 seconds ..."
 
 $tmpOut = [System.IO.Path]::GetTempFileName() + ".ipynb"
@@ -356,7 +370,7 @@ jupyter nbconvert `
     "--ExecutePreprocessor.timeout=60" `
     "--ExecutePreprocessor.kernel_name=meetup" `
     --output $tmpOut `
-    notebooks/test_setup.ipynb 2>$tmpErr
+    notebook/test_setup.ipynb 2>$tmpErr
 
 $nbExit = $LASTEXITCODE
 
@@ -380,7 +394,7 @@ if ($nbExit -eq 0) {
     Write-Host "    jupyter nbconvert --to notebook --execute ``"
     Write-Host "      --ExecutePreprocessor.kernel_name=meetup ``"
     Write-Host "      --output `$env:TEMP\test_out.ipynb ``"
-    Write-Host "      notebooks\test_setup.ipynb"
+    Write-Host "      notebook\test_setup.ipynb"
     Write-Host ""
 }
 
@@ -395,18 +409,23 @@ hr
 Write-Host "  Setup complete! Your environment is ready." -ForegroundColor Green
 hr
 Write-Host ""
+Write-Host "  -- Set your API key ---------------------------------"
+Write-Host ""
+Write-Host "    Copy-Item .env.example .env   # then put OPENAI_API_KEY=sk-... in .env"
+Write-Host ""
 Write-Host "  -- Open notebooks in VS Code ------------------------"
 Write-Host "  Launch VS Code FROM THIS TERMINAL:"
 Write-Host ""
 Write-Host "    code ."
 Write-Host ""
 Write-Host "  Then:"
-Write-Host "    1. Open  notebooks\01_what_makes_software_intelligent.ipynb"
+Write-Host "    1. Open  context_and_prompt_engineering_openai.ipynb"
+Write-Host "       (or a week notebook, e.g. week-01-llm-foundations\week1.ipynb)"
 Write-Host "    2. Kernel selector (top-right) -> AI Meetup (Python 3.12)"
-Write-Host "    3. Run cells with Shift+Enter"
+Write-Host "    3. Run cells top to bottom with Shift+Enter"
 Write-Host ""
 Write-Host "  -- Open notebooks in browser ------------------------"
 Write-Host ""
 Write-Host "    venv\Scripts\Activate.ps1"
-Write-Host "    jupyter notebook notebooks\"
+Write-Host "    jupyter notebook context_and_prompt_engineering_openai.ipynb"
 Write-Host ""

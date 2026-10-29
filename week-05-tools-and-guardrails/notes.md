@@ -38,18 +38,6 @@ Pace: steps 1 to 3 are the whole mechanism. Spend the time there. Steps 4 to 8 a
 Every `tool_call` id needs a matching `tool` message, or the next request fails with a 400.
 `arguments` is a **string of JSON**, not an object. Parse it yourself, and expect it to be wrong sometimes.
 
-## What breaks live
-
-| Symptom | Cause | Fix |
-|---|---|---|
-| `CERTIFICATE_VERIFY_FAILED` on Frankfurter or Nager, but OpenAI works | Network intercepts TLS; httpx uses certifi, not the OS trust store | `truststore` is injected in the notebook's setup cell. Install it if `ImportError` is swallowed silently: `pip install truststore` |
-| India holidays: HTTP 204 | Nager has no India data. It is deliberate: it is the "what happens when the API has nothing" demo | Do not "fix" it. Use `SG` for the good case |
-| Step 8 injection does not land | Models are probabilistic | Run it three times. If it never lands, say so honestly: the point is the pattern, and weaker models fail more |
-| Step 8 defence does not hold | Same | Same. Show that it lowers the rate and does not remove it |
-| API unreachable in the room | Wi-Fi | Fallback is a recorded response; swap the `httpx.get` for a dict. The teaching is unchanged |
-| `holidays` answer lists past dates | Model not told today's date | The system message carries `Today is {date.today()}`. Without it the model guesses |
-| 400 on the second model call | `tool` message missing or `tool_call_id` wrong | Print `show(messages)` |
-
 ## Questions that always come up
 
 - **"Why not let the model call the API directly?"** It has no network. It produces text. Something has to execute.

@@ -6,11 +6,11 @@
 #   1. Verifies you are in the right directory
 #   2. Finds Python 3.12+
 #   3. Creates a virtual environment (skips if it already exists)
-#   4. Installs all dependencies from requirements.txt
+#   4. Installs all dependencies from requirements.txt (+ jupyter, ipykernel, python-dotenv)
 #   5. Registers the Jupyter kernel
 #   6. Installs VS Code extensions (skips if VS Code is not in PATH)
 #   7. Verifies all package imports
-#   8. Executes notebooks/test_setup.ipynb end-to-end on the terminal
+#   8. Executes notebook/test_setup.ipynb end-to-end on the terminal
 
 # ── Colour helpers ────────────────────────────────────────────────────────────
 GREEN='\033[0;32m'
@@ -37,7 +37,7 @@ if [[ ! -f "requirements.txt" ]]; then
     echo ""
     echo "  Please run this script from the repo root:"
     echo ""
-    echo "    cd ai-cohort"
+    echo "    cd ai-cohort-new"
     echo "    bash setup.sh"
     echo ""
     exit 1
@@ -307,6 +307,17 @@ if ! python -m pip install -r requirements.txt --quiet; then
     echo ""
     exit 1
 fi
+
+info "Installing Jupyter tooling (jupyter, ipykernel, python-dotenv) ..."
+if ! python -m pip install jupyter ipykernel python-dotenv --quiet; then
+    fail "Jupyter tooling installation failed."
+    echo ""
+    echo "  Try running it manually to see the error:"
+    echo "    source venv/bin/activate"
+    echo "    pip install jupyter ipykernel python-dotenv"
+    echo ""
+    exit 1
+fi
 ok "All packages installed"
 
 # ── Step 4: Register Jupyter kernel ───────────────────────────────────────────
@@ -376,10 +387,12 @@ except Exception:
 }
 
 check_import "openai"
+check_import "tiktoken"
+check_import "httpx"
+check_import "fastapi"
+check_import "python-dotenv" "dotenv"
 check_import "jupyter" "jupyter_core"
 check_import "ipykernel"
-check_import "pandas"
-check_import "requests"
 check_import "notebook"
 
 if [[ $IMPORT_ERRORS -gt 0 ]]; then
@@ -395,7 +408,7 @@ fi
 
 # ── Step 7: Execute verification notebook ────────────────────────────────────
 echo ""
-echo -e "${BOLD}  [7/7] Running notebooks/test_setup.ipynb${NC}"
+echo -e "${BOLD}  [7/7] Running notebook/test_setup.ipynb${NC}"
 info "Executing notebook — this takes about 10 seconds ..."
 
 TMPOUT=$(mktemp /tmp/test_setup_out_XXXXXX.ipynb)
@@ -407,7 +420,7 @@ jupyter nbconvert \
     --ExecutePreprocessor.timeout=60 \
     --ExecutePreprocessor.kernel_name=meetup \
     --output "$TMPOUT" \
-    notebooks/test_setup.ipynb 2>"$TMPERR"
+    notebook/test_setup.ipynb 2>"$TMPERR"
 
 NB_EXIT=$?
 
@@ -433,7 +446,7 @@ else
     echo "    jupyter nbconvert --to notebook --execute \\"
     echo "      --ExecutePreprocessor.kernel_name=meetup \\"
     echo "      --output /tmp/test_out.ipynb \\"
-    echo "      notebooks/test_setup.ipynb"
+    echo "      notebook/test_setup.ipynb"
     echo ""
     exit 1
 fi
@@ -444,18 +457,23 @@ hr
 echo -e "${GREEN}${BOLD}  Setup complete! Your environment is ready.${NC}"
 hr
 echo ""
+echo "  ── Set your API key ────────────────────────────────────"
+echo ""
+echo "    cp .env.example .env      # then put OPENAI_API_KEY=sk-... in .env"
+echo ""
 echo "  ── Open notebooks in VS Code ───────────────────────────"
 echo "  Launch VS Code FROM THIS TERMINAL (not from Spotlight/Dock):"
 echo ""
 echo "    code ."
 echo ""
 echo "  Then:"
-echo "    1. Open  notebooks/test_setup.ipynb"
+echo "    1. Open  context_and_prompt_engineering_openai.ipynb"
+echo "       (or a week notebook, e.g. week-01-llm-foundations/week1.ipynb)"
 echo "    2. Kernel selector (top-right) → AI Meetup (Python 3.12)"
-echo "    3. Run cells with Shift+Enter"
+echo "    3. Run cells top to bottom with Shift+Enter"
 echo ""
 echo "  ── Open notebooks in browser ───────────────────────────"
 echo ""
 echo "    source venv/bin/activate"
-echo "    jupyter notebook notebooks/"
+echo "    jupyter notebook context_and_prompt_engineering_openai.ipynb"
 echo ""
