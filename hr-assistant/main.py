@@ -38,6 +38,6 @@ def chat_with_hr_assistant(user_input: str, conversation_id: str=None):
     
     # return the conversation id along with the response
     return {"response": response, "conversation_id": response["conversation_id"], "input_tokens": response["input_tokens"], "output_tokens": response["output_tokens"], "total_tokens": total_tokens}
-x
+
 if __name__ == "__main__":
     uvicorn.run("main:app", host="localhost", port=8000, reload=True)

@@ -21,30 +21,80 @@ TOOLS = [
          "name":"get_current_time",
          "description":"Get the current local date and time",
          "parameters":{
-            
          },
       }
    },
    {
-      "type":"function",
-      "function":{
-         "name":"greet_user",
-         "description":"Greet the user with a friendly message",
-         "parameters":{
-            "type":"object",
-            "properties":{
-               "name":{
-                  "type":"string",
-                  "description":"Name of the user to greet"
-               }
+         "type":"function",
+         "function":{
+            "name":"get_current_logged_in_employee_details",
+            "description":"Get the details of the currently logged in employee",
+            "parameters":{
             },
-            "required":[
-               "name"
-            ]
          }
-      }
-   }
+      }, 
+   {
+            "type":"function",
+            "function":{
+               "name":"get_leave_balance",
+               "description":"Get the leave balance of the for given employee id",
+               "parameters":{
+                   "type":"object",
+                   "properties":{
+                       "employee_id": {
+                           "type": "string"
+                       }
+                   }
+               },
+            }
+         },
+   {
+               "type":"function",
+               "function":{
+                  "name":"apply_leave",
+                  "description":"Apply leave for the currently logged in employee",
+                  "parameters":{
+                      "type":"object",
+                      "properties":{
+                          "employee_id": {
+                              "type": "string"
+                          },
+                          "start_date": {
+                              "type": "string"
+                          },
+                          "end_date": {
+                              "type": "string"
+                          },
+                          "leave_type": {
+                              "type": "string"
+                          }
+                      }
+                  },
+               }
+            }, 
+   {
+                  "type":"function",
+                  "function":{
+                     "name":"send_email",
+                     "description":"Send an email to the person for given email subject and body",
+                     "parameters":{
+                         "type":"object",
+                         "properties":{
+                             "email_id": {
+                                 "type": "string"
+                             },
+                             "subject": {
+                                 "type": "string"
+                             },
+                             "body": {
+                                 "type": "string"
+                             }
+                         }
+                     },
+                  }
+               },    
 ]
+
 
 
     
@@ -65,7 +115,7 @@ def make_llm_api_call(messages,tools):
             "messages": messages,
             "tools": tools
     }
-    print("request body sent to LLM:", data)
+    # print("request body sent to LLM:", data)
     response = client.post(url, headers=headers, json=data)
     if response.status_code != 200:
         raise Exception(f"Request failed with status code {response.status_code}: {response.text}")
@@ -114,29 +164,32 @@ def call_llm(prompt, conversation_id: str=None):
     # check if there is a tool call in the response
     llm_response = r["choices"][0]["message"]
     print(f"LLM raw response: {llm_response}")
-    if "tool_calls" in llm_response:
-        tool_call = llm_response["tool_calls"][0]
-        tool_call_id =  llm_response["tool_calls"][0]["id"]
-        result = execute_tools(llm_response["tool_calls"][0])
-        print(f"Tool call result: {result}")
-        print(f"Tool call ID: {tool_call_id}")
-        after_tool_response = make_llm_api_call(
+    while "tool_calls" in llm_response:
+        tool_calls  = llm_response["tool_calls"]
+        tool_call_response = []
+        for tool_call in tool_calls:
+            print(f"Tool suggested: {tool_call}")
+            print(f"************* tool call sugested + {tool_call}")
+            tool_call_id =  tool_call["id"]
+            result = execute_tools(tool_call)
+            print(f"Tool call result: {result}")
+            print(f"Tool call ID: {tool_call_id}")
+            tool_call_response.append({"role":"tool", "content": json.dumps(result),"tool_call_id": tool_call_id})
+        
+        r = make_llm_api_call(
             messages=[
                 {"role": "system", "content": "You are a helpful assistant for my company Rebind Rise, you can only answer questions related to HR and only based on context passed for the question in prompt, avoid answering anything outside of the provided context."},
                 {"role":"developer", "content": f"here is summary of conversation so far {summary_message}"},
                 *[{"role": m["role"], "content": m["content"]} for m in conversation_history],
                 {"role": "user", "content": enriched_prompt},
                 llm_response,
-                {"role":"tool", "content": json.dumps(result),"tool_call_id": tool_call_id},
+                *tool_call_response,
             ],
             tools=TOOLS
         )
-        print(f"Follow-up LLM response: {after_tool_response}")
-        input_tokens = after_tool_response["usage"]["prompt_tokens"]
-        output_tokens = after_tool_response["usage"]["completion_tokens"]
-        print(f"Input tokens: {input_tokens}, Output tokens: {output_tokens}")
-        return {"content": after_tool_response["choices"][0]["message"]["content"], "input_tokens": input_tokens, "output_tokens": output_tokens, "conversation_id": conversation_id}
-
+        llm_response = r["choices"][0]["message"]
+    return {"content": llm_response["content"], "input_tokens": 0, "output_tokens": 0, "conversation_id": conversation_id}
+    
         
         
     # print(f"LLM response: {llm_response}")
