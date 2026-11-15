@@ -31,18 +31,73 @@
       justify-content: center;
       padding: 24px;
     }
-    .chat {
+    .app {
       width: 100%;
-      max-width: 780px;
+      max-width: 1080px;
       height: min(88vh, 820px);
       display: flex;
-      flex-direction: column;
       background: var(--panel);
       border: 1px solid var(--border);
       border-radius: 20px;
       box-shadow: 0 30px 80px rgba(0, 0, 0, .45);
       overflow: hidden;
     }
+    .sidebar {
+      width: 280px;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      background: var(--panel-2);
+      border-right: 1px solid var(--border);
+    }
+    .sidebar-top { padding: 16px; border-bottom: 1px solid var(--border); }
+    .new-chat {
+      width: 100%;
+      height: 42px;
+      font-size: 14px;
+      font-weight: 600;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .conversations {
+      flex: 1;
+      overflow-y: auto;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .conversations::-webkit-scrollbar { width: 6px; }
+    .conversations::-webkit-scrollbar-thumb { background: var(--border); border-radius: 6px; }
+    .conv {
+      display: block;
+      width: 100%;
+      text-align: left;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--text);
+      font: inherit;
+      cursor: pointer;
+      transition: background .15s, border-color .15s;
+    }
+    .conv:hover { background: rgba(108, 123, 255, .08); }
+    .conv.active { background: rgba(108, 123, 255, .16); border-color: rgba(108, 123, 255, .45); }
+    .conv .conv-title {
+      font-size: 13.5px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .conv .conv-time { font-size: 11.5px; color: var(--muted); margin-top: 2px; }
+    .conv-empty { color: var(--muted); font-size: 13px; text-align: center; padding: 20px 8px; }
+    .chat {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+    }
+    .menu-toggle { display: none; }
     .header {
       display: flex;
       align-items: center;
@@ -142,8 +197,7 @@
     }
     textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(108, 123, 255, .2); }
     textarea::placeholder { color: var(--muted); }
-    button {
-      height: 44px; width: 44px;
+    form button, .new-chat, .menu-toggle {
       border: none; border-radius: 12px;
       background: var(--user-bubble);
       color: #fff; font-size: 18px;
@@ -151,21 +205,46 @@
       transition: transform .1s, opacity .15s;
       flex-shrink: 0;
     }
-    button:hover:not(:disabled) { transform: translateY(-1px); }
-    button:active:not(:disabled) { transform: scale(.95); }
-    button:disabled { opacity: .45; cursor: not-allowed; }
+    form button { height: 44px; width: 44px; }
+    form button:hover:not(:disabled), .new-chat:hover { transform: translateY(-1px); }
+    form button:active:not(:disabled), .new-chat:active { transform: scale(.97); }
+    form button:disabled { opacity: .45; cursor: not-allowed; }
     @keyframes pop { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
     @keyframes bounce { 0%, 80%, 100% { transform: scale(.6); opacity: .5; } 40% { transform: scale(1); opacity: 1; } }
-    @media (max-width: 520px) {
+    @media (max-width: 760px) {
       body { padding: 0; }
-      .chat { height: 100vh; max-height: none; border-radius: 0; border: none; }
+      .app { height: 100vh; max-height: none; border-radius: 0; border: none; position: relative; }
+      .sidebar {
+        position: absolute; inset: 0 auto 0 0; z-index: 10;
+        width: min(300px, 85vw);
+        transform: translateX(-100%);
+        transition: transform .2s ease;
+        box-shadow: 10px 0 40px rgba(0, 0, 0, .5);
+      }
+      .app.sidebar-open .sidebar { transform: none; }
+      .menu-toggle {
+        display: grid; place-items: center;
+        width: 36px; height: 36px; font-size: 16px;
+        background: var(--bot-bubble); border: 1px solid var(--border);
+      }
       .bubble { max-width: 88%; }
     }
   </style>
 </head>
 <body>
+  <div class="app" id="app">
+  <aside class="sidebar">
+    <div class="sidebar-top">
+      <button type="button" class="new-chat" id="new-chat">＋ New conversation</button>
+    </div>
+    <nav class="conversations" id="conversations">
+      <div class="conv-empty">Loading…</div>
+    </nav>
+  </aside>
+
   <main class="chat">
     <header class="header">
+      <button type="button" class="menu-toggle" id="menu-toggle" aria-label="Conversations">☰</button>
       <div class="avatar">🤖</div>
       <div>
         <h1>{{ title }}</h1>
@@ -186,6 +265,7 @@
       <button type="submit" id="send" aria-label="Send">➤</button>
     </form>
   </main>
+  </div>
 
   <script>
     const messagesEl = document.getElementById("messages");
@@ -228,26 +308,144 @@
       input.style.height = Math.min(input.scrollHeight, 140) + "px";
     }
 
+    const appEl = document.getElementById("app");
+    const convListEl = document.getElementById("conversations");
+    const newChatBtn = document.getElementById("new-chat");
+    const menuToggle = document.getElementById("menu-toggle");
+
+    // null means "new conversation" — the backend creates one on the first /chat call
+    let currentConversationId = null;
+    // bumped on every conversation switch so in-flight responses don't land in the wrong chat
+    let viewToken = 0;
+
+    function showEmpty() {
+      messagesEl.innerHTML =
+        '<div class="empty" id="empty"><div class="big">💬</div>Ask me anything to get started.</div>';
+    }
+
+    function formatTime(value) {
+      if (!value) return "";
+      const d = new Date(value);
+      return isNaN(d) ? "" : d.toLocaleString([], { dateStyle: "medium", timeStyle: "short" });
+    }
+
+    function renderConversations(conversations) {
+      convListEl.innerHTML = "";
+      if (!conversations.length) {
+        convListEl.innerHTML = '<div class="conv-empty">No conversations yet.</div>';
+        return;
+      }
+      for (const c of conversations) {
+        const item = document.createElement("button");
+        item.type = "button";
+        item.className = "conv" + (String(c.id) === String(currentConversationId) ? " active" : "");
+        item.dataset.id = c.id;
+        const title = document.createElement("div");
+        title.className = "conv-title";
+        title.textContent = c.title || "Untitled conversation";
+        title.title = c.title || "";
+        const time = document.createElement("div");
+        time.className = "conv-time";
+        time.textContent = formatTime(c.time);
+        item.append(title, time);
+        item.addEventListener("click", () => openConversation(c.id));
+        convListEl.appendChild(item);
+      }
+    }
+
+    function highlightActive() {
+      for (const el of convListEl.querySelectorAll(".conv")) {
+        el.classList.toggle("active", el.dataset.id === String(currentConversationId));
+      }
+    }
+
+    async function loadConversations() {
+      try {
+        const res = await fetch("/conversations");
+        if (!res.ok) throw new Error(`Request failed (${res.status})`);
+        const data = await res.json();
+        const conversations = (data.conversations ?? [])
+          .slice()
+          .sort((a, b) => new Date(b.time) - new Date(a.time));
+        renderConversations(conversations);
+        return conversations;
+      } catch (err) {
+        convListEl.innerHTML = '<div class="conv-empty">Could not load conversations.</div>';
+        return [];
+      }
+    }
+
+    async function openConversation(id) {
+      appEl.classList.remove("sidebar-open");
+      if (String(id) === String(currentConversationId)) return;
+      currentConversationId = id;
+      const token = ++viewToken;
+      highlightActive();
+      messagesEl.innerHTML = "";
+      sendBtn.disabled = false;
+      try {
+        const res = await fetch("/messages?conversation_id=" + encodeURIComponent(id));
+        if (!res.ok) throw new Error(`Request failed (${res.status})`);
+        const data = await res.json();
+        if (token !== viewToken) return;
+        const msgs = (data.messages ?? []).filter(
+          (m) => (m.role === "user" || m.role === "assistant") && m.content
+        );
+        if (!msgs.length) showEmpty();
+        for (const m of msgs) addMessage(m.role, m.content);
+      } catch (err) {
+        if (token !== viewToken) return;
+        addMessage("assistant", "Could not load messages: " + err.message, { error: true });
+      }
+      input.focus();
+    }
+
+    function startNewConversation() {
+      appEl.classList.remove("sidebar-open");
+      currentConversationId = null;
+      viewToken++;
+      highlightActive();
+      showEmpty();
+      sendBtn.disabled = false;
+      input.value = "";
+      autosize();
+      input.focus();
+    }
+
     async function send(text) {
       addMessage("user", text);
       input.value = "";
       autosize();
       sendBtn.disabled = true;
       const typing = addTyping();
+      const token = viewToken;
+      const wasNew = currentConversationId == null;
       try {
-        const res = await fetch("/chat?message=" + encodeURIComponent(text));
+        let url = "/chat?message=" + encodeURIComponent(text);
+        if (!wasNew) url += "&conversation_id=" + encodeURIComponent(currentConversationId);
+        const res = await fetch(url);
         if (!res.ok) throw new Error(`Request failed (${res.status})`);
         const data = await res.json();
+        if (wasNew) loadConversations();
+        if (token !== viewToken) return; // user switched away while waiting
+        if (data.conversation_id != null) currentConversationId = data.conversation_id;
         typing.remove();
         addMessage("assistant", data.message ?? "(empty response)");
+        if (wasNew) highlightActive();
       } catch (err) {
+        if (token !== viewToken) return;
         typing.remove();
         addMessage("assistant", "Something went wrong: " + err.message, { error: true });
       } finally {
-        sendBtn.disabled = false;
-        input.focus();
+        if (token === viewToken) {
+          sendBtn.disabled = false;
+          input.focus();
+        }
       }
     }
+
+    newChatBtn.addEventListener("click", startNewConversation);
+    menuToggle.addEventListener("click", () => appEl.classList.toggle("sidebar-open"));
 
     form.addEventListener("submit", (e) => {
       e.preventDefault();
@@ -263,22 +461,12 @@
     });
     input.addEventListener("input", autosize);
 
-    async function loadHistory() {
-      try {
-        const res = await fetch("/messages");
-        if (!res.ok) throw new Error(`Request failed (${res.status})`);
-        const data = await res.json();
-        for (const m of data.messages ?? []) {
-          if ((m.role === "user" || m.role === "assistant") && m.content) {
-            addMessage(m.role, m.content);
-          }
-        }
-      } catch (err) {
-        addMessage("assistant", "Could not load previous messages: " + err.message, { error: true });
+    // On load: list conversations and open the most recent one (or stay on a fresh chat)
+    loadConversations().then((conversations) => {
+      if (conversations.length && currentConversationId == null && !sendBtn.disabled) {
+        openConversation(conversations[0].id);
       }
-    }
-
-    loadHistory();
+    });
   </script>
 </body>
 </html>

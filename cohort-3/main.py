@@ -9,7 +9,7 @@ from pathlib import Path
 import uvicorn
 import os
 from db.models import Message
-from db.db import get_all_messages
+from db.db import get_all_messages,create_conversation,list_conversations
 app  = FastAPI()
 load_dotenv()
 api_key = os.environ.get("OPENAI_API_KEY")
@@ -20,18 +20,32 @@ templates = Jinja2Templates(directory=Path(__file__).parent / "templates")
 
 @app.get("/", response_class=HTMLResponse)
 def read_root(request: Request):
-    return templates.TemplateResponse(request, "chat.html", {"title": "Chat Assistant", "name":"mahadev"})
+    return templates.TemplateResponse(request, "chat.html", {"title": "Rebind Rise", "name":"mahadev"})
 
 
 @app.get("/chat")
-def chat(message:str="hello"):
-    chat_response = openai_client.chat(message)
-    return {"message": chat_response}
+def chat(message:str="hello", conversation_id:str = None):
+    # detect keywords from message --> ????
+    # pass keywords to file and extract all matching lines
+    # pass this matched lines to llm
+    # let llm answer
+    if not conversation_id:
+        conversation_id = None
+        conversation = create_conversation(message)
+        print("Created new conversation with ID:", conversation.id)
+        conversation_id = conversation.id
+    chat_response = openai_client.chat(message,conversation_id)
+    return {"message": chat_response,"conversation_id": conversation_id}
 
 @app.get("/messages")
-def get_messages():
-    messages = get_all_messages()
-    return {"messages": [{"role": m.role, "content": m.content} for m in messages]}
+def get_messages(conversation_id: str):
+    messages = get_all_messages(conversation_id)
+    return {"messages": [{"role": m.role, "content": m.content, "conversation_id": m.conversation_id} for m in messages]}
+
+@app.get("/conversations")
+def get_conversations():
+    conversations = list_conversations()
+    return {"conversations": [{"id": c.id, "title": c.title,"time": c.timestamp} for c in conversations]}
 
 @app.get("/health")
 def health_check():

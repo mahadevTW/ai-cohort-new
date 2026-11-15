@@ -9,10 +9,21 @@ Base = declarative_base()
 class Message(Base):
     __tablename__ = "messages"
     id = Column(Integer, primary_key=True, autoincrement=True)
+    conversation_id = Column(Integer, nullable=True)
     role= Column(String(50), nullable=False)
     content = Column(Text, nullable=False)
     token_usage = Column(Integer, nullable=False)
     timestamp = Column(DateTime, nullable=False)
+
+
+
+class Conversation(Base):
+    __tablename__ = "conversations"
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    title = Column(Text, nullable=False)
+    token_usage = Column(Integer, nullable=False)
+    timestamp = Column(DateTime, nullable=False)
+
 
 # at start if this table does not exist, create it
 engine = create_engine("sqlite:///messages.db")
