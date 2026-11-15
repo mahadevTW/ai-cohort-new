@@ -1,15 +1,19 @@
-"""A tiny HR server. It offers four tools to any MCP client, over HTTP.
+r"""A tiny HR server. It offers four tools to any MCP client, over HTTP.
 
-Start it once, in its own terminal, and leave it running:
-    ./.venv/bin/python week-07-mcp/hr_mcp_server.py
+Start it once, in its own terminal (from the repo root), and leave it running:
+    source venv/bin/activate              # Windows: venv\Scripts\Activate.ps1
+    python week-07-mcp/hr_mcp_server.py
+To start fresh (empty data), or after you edit this file: press Ctrl+C in that terminal and run it again.
 Clients connect to  http://127.0.0.1:8765/mcp . It sits quietly and waits for requests. That is normal.
+Every tool call is logged in that terminal: the tool, its inputs, its result, and everything saved so far.
 (Add --stdio to run the old way, where a client starts the server itself.)
 
 Two rules:
-  * Never print() here. Over stdio a print breaks the conversation; over HTTP it only clutters the log. Use stderr.
+  * Never print() to stdout here. Over stdio a print breaks the conversation. Log to stderr instead.
   * No tool takes an employee id. The server knows who is calling (Asha); the model is never asked.
 """
 
+import functools
 import sys
 from datetime import date
 
@@ -18,13 +22,27 @@ from fastmcp import FastMCP
 mcp = FastMCP("hr-desk")
 
 ASHA = {"manager": "Ravi Menon", "casual_days": 4}
-LEAVE_REQUESTS = []          # our fake HR system: a plain list
+LEAVE_REQUESTS = []          # our fake HR system: plain lists, kept in memory while the server runs
 NOTIFICATIONS = []
 
 READ_ONLY = {"readOnlyHint": True}       # a label the client can read: "this tool changes nothing"
 
 
+def logged(tool):
+    """Wrap a tool so every call is written to the server terminal (stderr, never stdout)."""
+    @functools.wraps(tool)
+    def wrapper(*args, **kwargs):
+        result = tool(*args, **kwargs)
+        log = functools.partial(print, file=sys.stderr)
+        log(f"\n[tool call] {tool.__name__}({kwargs}) -> {result}")
+        log(f"   leave_requests: {LEAVE_REQUESTS}")
+        log(f"   notifications:  {NOTIFICATIONS}")
+        return result
+    return wrapper
+
+
 @mcp.tool(annotations=READ_ONLY)
+@logged
 def get_leave_balance() -> dict:
     """Get how many casual leave days are left. Use it before applying for leave."""
     used = sum(r["days"] for r in LEAVE_REQUESTS)
@@ -32,12 +50,14 @@ def get_leave_balance() -> dict:
 
 
 @mcp.tool(annotations=READ_ONLY)
+@logged
 def get_holidays() -> list[str]:
     """List the upcoming company holidays."""
     return ["2026-12-25 Christmas", "2027-01-26 Republic Day"]
 
 
 @mcp.tool
+@logged
 def apply_leave(start_date: str, days: int) -> dict | str:
     """Apply for casual leave. This WRITES to the HR system.
     start_date is YYYY-MM-DD and must be a weekday after today. Asking twice for the same dates is safe."""
@@ -46,13 +66,16 @@ def apply_leave(start_date: str, days: int) -> dict | str:
         return f"Error: start_date must be after today ({date.today()})"
     if start.weekday() >= 5:
         return f"Error: {start_date} is a {start.strftime('%A')}. Pick a weekday"
+    for r in LEAVE_REQUESTS:                                   # same request again? do nothing, say so
+        if r["start_date"] == start_date and r["days"] == days:
+            return {"request_id": r["id"], "status": "already_submitted"}
     request = {"id": len(LEAVE_REQUESTS) + 1, "start_date": start_date, "days": days}
     LEAVE_REQUESTS.append(request)
-    print("saved leave request", request, file=sys.stderr)      # logs go to stderr, never stdout
     return {"request_id": request["id"], "status": "submitted"}
 
 
 @mcp.tool
+@logged
 def notify_manager(request_id: int, note: str) -> dict | str:
     """Send the manager a short message about a leave request. This SENDS a message.
     Use it only after apply_leave worked, with the request_id it returned. Asking twice is safe."""
@@ -63,8 +86,21 @@ def notify_manager(request_id: int, note: str) -> dict | str:
     NOTIFICATIONS.append({"request_id": request_id, "note": note})
     return {"sent_to": ASHA["manager"], "status": "sent"}
 
+@mcp.tool
+def get_current_salary():
+    """this return the current salary of logged in employee"""
+    return {
+        "Basic": 500000,
+        "bonus":1000000,
+        "performance incentive":100000
+    }
+
+@mcp.tool
+def greet():
+    return "Hi, how are you doing"
+
 if __name__ == "__main__":
-    if "--stdio" in sys.argv:                                 # old style: the client starts the server itself (rarely used)
-        mcp.run()
-    else:                                                     # default: run it once, clients connect by URL
-        mcp.run(transport="http", host="127.0.0.1", port=8765)    # URL: http://127.0.0.1:8765/mcp
+    # if "--stdio" in sys.argv:                                 # old style: the client starts the server itself (rarely used)
+    #     mcp.run()
+    # else:                                                     # default: run it once, clients connect by URL
+    mcp.run(transport="http", host="127.0.0.1", port=8765)    # URL: http://127.0.0.1:8765/mcp
