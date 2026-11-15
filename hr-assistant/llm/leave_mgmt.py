@@ -1,6 +1,7 @@
 leave_record = []
 
 def apply_leave(employee_id: str, start_date: str, end_date: str, leave_type: str):
+    # leave management system api call
     leave_record.append({
         "employee_id": employee_id,
         "start_date": start_date,
@@ -9,6 +10,7 @@ def apply_leave(employee_id: str, start_date: str, end_date: str, leave_type: st
     })
 
 def list_leaves(employee_id: str):
+    # leave management system api call
     return [leave for leave in leave_record if leave["employee_id"] == employee_id]
 
 def get_leave_balance(employee_id: str):
@@ -20,6 +22,7 @@ def get_leave_balance(employee_id: str):
     }
 
 def send_email(email_id,subject, body):
+    # Email system APi call
     print(f"Sending email to {email_id} with subject '{subject}' and body '{body}'")
     
 def get_logged_in_employee_details():

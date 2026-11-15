@@ -14,6 +14,9 @@ headers = {
     "Authorization": f"Bearer {OPENAI_API_KEY}",
     "Content-Type": "application/json"
 }
+# connect to mcp server using fastmcp client
+# call list-tools
+# all returned tool attach to llm client
 TOOLS = [
    {
       "type":"function",

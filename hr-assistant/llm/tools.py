@@ -2,6 +2,9 @@ import json
 
 
 def execute_tools(tool):
+    # is tool coming as response is part of MCP server
+    # then call execute_tool and get the response back
+    # 
     tool_name = tool["function"]["name"]
     if tool_name == "get_current_time":
         from datetime import datetime
