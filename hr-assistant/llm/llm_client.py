@@ -4,6 +4,8 @@ import httpx
 import os
 from db.db import list_messages_in_conversation,read_messages_after_last_compaction,get_conversation_summary,update_conversation_summary
 from llm.tools import execute_tools
+from fastmcp import Client
+import asyncio
 MESSAGE_LIMIT = 5
 token_usage = [{"in":1, "out":1}]
 from embed import find_relevant_chunks
@@ -14,9 +16,19 @@ headers = {
     "Authorization": f"Bearer {OPENAI_API_KEY}",
     "Content-Type": "application/json"
 }
+
+MCP_URL = "http://127.0.0.1:8765/mcp"
+
+def list_tools():
+    async def go():
+        async with Client(MCP_URL) as hr_mcp_client:
+            return await hr_mcp_client.list_tools()
+    return asyncio.run(go())
+
 # connect to mcp server using fastmcp client
 # call list-tools
 # all returned tool attach to llm client
+mcp_tools = list_tools()
 TOOLS = [
    {
       "type":"function",
@@ -35,72 +47,12 @@ TOOLS = [
             "parameters":{
             },
          }
-      }, 
-   {
-            "type":"function",
-            "function":{
-               "name":"get_leave_balance",
-               "description":"Get the leave balance of the for given employee id",
-               "parameters":{
-                   "type":"object",
-                   "properties":{
-                       "employee_id": {
-                           "type": "string"
-                       }
-                   }
-               },
-            }
-         },
-   {
-               "type":"function",
-               "function":{
-                  "name":"apply_leave",
-                  "description":"Apply leave for the currently logged in employee",
-                  "parameters":{
-                      "type":"object",
-                      "properties":{
-                          "employee_id": {
-                              "type": "string"
-                          },
-                          "start_date": {
-                              "type": "string"
-                          },
-                          "end_date": {
-                              "type": "string"
-                          },
-                          "leave_type": {
-                              "type": "string"
-                          }
-                      }
-                  },
-               }
-            }, 
-   {
-                  "type":"function",
-                  "function":{
-                     "name":"send_email",
-                     "description":"Send an email to the person for given email subject and body",
-                     "parameters":{
-                         "type":"object",
-                         "properties":{
-                             "email_id": {
-                                 "type": "string"
-                             },
-                             "subject": {
-                                 "type": "string"
-                             },
-                             "body": {
-                                 "type": "string"
-                             }
-                         }
-                     },
-                  }
-               },    
+      }
 ]
+# enriched tools with mcp server tools
+for t in mcp_tools:
+    TOOLS.append({"type": "function", "function": {"name": t.name, "description": t.description, "parameters": t.input_schema}})
 
-
-
-    
     # print(f"Relevant chunks for query: {query}, found {len(relevant_chunks)} chunks.")
     # for chunk in relevant_chunks:
     #     print(chunk)
